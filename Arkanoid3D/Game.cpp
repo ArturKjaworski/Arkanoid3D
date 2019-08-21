@@ -417,8 +417,6 @@ std::pair<glm::vec3, glm::vec3> Game::CheckCollision(const glm::vec3& oldPos, co
 		{
 			if (IsCollide(ballPos, gObjects[ii]))
 			{
-				std::cout << "kolizja" << std::endl;
-
 				if (oldPos == player->GetBall()->GetTransform().GetPos())
 					player->AddToScore(20);
 				else
@@ -430,7 +428,17 @@ std::pair<glm::vec3, glm::vec3> Game::CheckCollision(const glm::vec3& oldPos, co
 				float n = (ballPos.z - Ball::radius - (objPos.z + objBoxSize.z)) / forwardVec.z;
 				glm::vec3 tmpPos = ballPos - forwardVec * n;
 
-				//if's below can be shortened (DRY failed)
+				//IF's below can be shortened (DRY failed)
+
+				//case for collisions on block edge
+				if (((tmpPos.x - Ball::radius/2 > objPos.x + objBoxSize.x) || (tmpPos.x + Ball::radius/2 < objPos.x - objBoxSize.x)) && ((tmpPos.z - Ball::radius/2 > objPos.z + objBoxSize.z) || (tmpPos.z + Ball::radius/2 < objPos.z - objBoxSize.z)))
+				{
+					gObjects[ii]->OnHit();
+					destroyedObjsID.push_back(dynamic_cast<Block*>(gObjects[ii])->GetID());
+
+					gObjects.erase(gObjects.begin() + ii);
+					return std::make_pair(ballPos, glm::normalize(-forwardVec));
+				}
 
 				if ((tmpPos.x >= objPos.x - objBoxSize.x) && (tmpPos.x <= objPos.x + objBoxSize.x))
 				{
@@ -485,7 +493,6 @@ std::pair<glm::vec3, glm::vec3> Game::CheckCollision(const glm::vec3& oldPos, co
 
 					return std::make_pair(ballPos, newForward);
 				}
-
 			}
 		}
 #pragma endregion
