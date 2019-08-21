@@ -85,11 +85,6 @@ void Game::Init()
 	isRunning = true;
 }
 
-void Game::InitMenu()
-{
-
-}
-
 void Game::Update(float deltaTime)
 {
 	if (!isRunning)
@@ -340,13 +335,13 @@ std::pair<glm::vec3, glm::vec3> Game::CheckCollision(const glm::vec3& oldPos, co
 		if (oldPos == player->GetBall()->GetTransform().GetPos())
 		{
 			glm::vec3 pos = player->GetTransform().GetPos();
-			ballPos = glm::vec3(pos.x, 0, pos.z - 1.5f);
+			ballPos = glm::vec3(pos.x, 0, pos.z - Ball::radius/2);
 			player->AddToScore(-30);
 		}			
 		else
 		{
 			glm::vec3 pos = enemy->GetTransform().GetPos();
-			ballPos = glm::vec3(pos.x, 0, pos.z + 1.5f);
+			ballPos = glm::vec3(pos.x, 0, pos.z + Ball::radius / 2);
 					
 			enemy->AddToScore(-30);
 		}
